@@ -1,4 +1,7 @@
-﻿using AuthUserService.Domain.Entities;
+﻿using AuthUserService.Application.Interfaces;
+using AuthUserService.Domain.Entities;
+using InternetCafe.Common.Entities;
+using InternetCafe.Common.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,8 +11,10 @@ namespace AuthUserService.Infrastructure.Persistence
 {
     public class AuthUserDbContext : DbContext
     {
-        public AuthUserDbContext(DbContextOptions<AuthUserDbContext> options) : base(options)
+        private readonly ICurrentUserService _currentUserService;
+        public AuthUserDbContext(DbContextOptions<AuthUserDbContext> options, ICurrentUserService currentUserService) : base(options)
         {
+            _currentUserService = currentUserService;
         }
         public DbSet<User> Users { get; set; }
 
@@ -33,6 +38,53 @@ namespace AuthUserService.Infrastructure.Persistence
                 entity.Property(e => e.PhoneNumber).HasMaxLength(20);
                 entity.Property(e => e.Address).HasMaxLength(200);
             });
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            HandleAuditInfo();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override int SaveChanges()
+        {
+            HandleAuditInfo();
+            return base.SaveChanges();
+        }
+
+        private void HandleAuditInfo()
+        {
+            var entries = ChangeTracker.Entries<BaseEntity>();
+            var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+
+            foreach (var entry in entries)
+            {
+                var now = TimeZoneInfo.ConvertTime(DateTime.Now, vietnamTimeZone);
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entry.Entity.Creation_Timestamp = now;
+                        entry.Entity.Creation_EmpId = _currentUserService.UserId ?? 0;
+                        entry.Entity.LastUpdated_Timestamp = now;
+                        entry.Entity.LastUpdated_EmpId = _currentUserService.UserId ?? 0;
+                        entry.Entity.Status = (int)Status.Active;
+                        break;
+
+                    case EntityState.Modified:
+                        entry.Entity.LastUpdated_Timestamp = now;
+                        entry.Entity.LastUpdated_EmpId = _currentUserService.UserId ?? 0;
+
+                        entry.Property(x => x.Creation_Timestamp).IsModified = false;
+                        entry.Property(x => x.Creation_EmpId).IsModified = false;
+                        break;
+                    case EntityState.Deleted:
+                        entry.State = EntityState.Modified;
+                        entry.Entity.Status = (int)Status.Cancelled;
+                        entry.Entity.LastUpdated_Timestamp = now;
+                        entry.Entity.LastUpdated_EmpId = _currentUserService.UserId ?? 0;
+                        break;
+                }
+            }
         }
     }
 }
