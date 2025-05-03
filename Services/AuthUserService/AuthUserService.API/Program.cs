@@ -1,5 +1,7 @@
 using AuthUserService.Infrastructure.Extensions;
 using InternetCafe.Common.Api.Middleware;
+using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,9 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+builder.Services.AddOcelot(builder.Configuration);
 
 // Register authentication services
 builder.Services.AddAuthenticationServices(builder.Configuration);
@@ -43,6 +48,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseHttpsRedirection();
+app.UseOcelot().Wait();
 
 app.Run();
