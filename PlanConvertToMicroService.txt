@@ -1,0 +1,545 @@
+------------------------------------Giai đoạn 1: Phân tách dự án------------------------------------
+
+1.1. Tạo solution cho toàn bộ hệ thống
+InternetCafe.Microservices/
+├── Gateway/
+├── Services/
+│   ├── AuthUserService/
+│   ├── ComputerSessionService/
+│   └── AccountStatisticsService/
+├── Common/
+└── docker-compose.yml
+
+1.2. Tạo common libraries chứa các thành phần dùng chung
+InternetCafe.Microservices/Common/
+├── InternetCafe.Common/
+│   ├── ValueObjects/            # (Email, IPAddress, Money)
+│   ├── Exceptions/              # Các exception chung
+│   └── Result.cs                # Lớp Result generic
+└── InternetCafe.Common.Api/
+    ├── ApiResponse.cs           # Sử dụng lại ApiResponse
+    └── Middleware/              # Các middleware chung
+	
+	
+------------------------------------Giai đoạn 2: Triển khai từng service------------------------------------
+
+2.1. Auth & User Service
+InternetCafe.Microservices/Services/AuthUserService/
+├── AuthUserService.API/
+│   ├── Program.cs               # Setup service
+│   ├── Controllers/
+│   │   ├── AuthController.cs    # Tái sử dụng từ dự án cũ
+│   │   └── UserController.cs    # Tái sử dụng từ dự án cũ
+│   └── appsettings.json         # Cấu hình service
+├── AuthUserService.Domain/
+│   ├── Entities/
+│   │   └── User.cs              # Đơn giản hóa từ model cũ
+│   └── Exceptions/
+├── AuthUserService.Application/
+│   ├── Services/
+│   │   ├── AuthenticationService.cs  # Tái sử dụng
+│   │   └── UserService.cs            # Tái sử dụng
+│   ├── DTOs/                    # Tái sử dụng DTOs liên quan
+│   └── Interfaces/
+└── AuthUserService.Infrastructure/
+    ├── Persistence/
+    │   ├── AuthUserDbContext.cs  # Schema riêng
+    │   ├── Migrations/
+    │   └── Repositories/         # Tái sử dụng repositories
+    ├── Identity/
+    │   ├── TokenGenerator.cs     # Tái sử dụng
+    │   └── PasswordHasher.cs     # Tái sử dụng
+    └── Extensions/
+        └── ServiceCollectionExtensions.cs
+
+
+
+2.2. Computer & Session Service
+InternetCafe.Microservices/Services/ComputerSessionService/
+├── ComputerSessionService.API/
+│   ├── Program.cs
+│   ├── Controllers/
+│   │   ├── ComputerController.cs  # Tái sử dụng
+│   │   └── SessionController.cs   # Tái sử dụng
+│   └── appsettings.json
+├── ComputerSessionService.Domain/
+│   ├── Entities/
+│   │   ├── Computer.cs            # Tái sử dụng
+│   │   └── Session.cs             # Tái sử dụng
+│   └── Exceptions/
+├── ComputerSessionService.Application/
+│   ├── Services/
+│   │   ├── ComputerService.cs     # Tái sử dụng
+│   │   └── SessionService.cs      # Điều chỉnh cho microservice
+│   ├── DTOs/                      # Tái sử dụng DTOs
+│   ├── Interfaces/
+│   └── Events/                    # Thêm event publishers
+├── ComputerSessionService.Infrastructure/
+    ├── Persistence/
+    │   ├── ComputerSessionDbContext.cs
+    │   └── Repositories/          # Tái sử dụng
+    ├── Services/
+    │   └── AccountServiceClient.cs  # Client gọi sang Account Service
+    └── Extensions/
+
+
+2.3. Account & Statistics Service
+InternetCafe.Microservices/Services/AccountStatisticsService/
+├── AccountStatisticsService.API/
+│   ├── Program.cs
+│   ├── Controllers/
+│   │   ├── AccountController.cs    # Tái sử dụng
+│   │   └── StatisticsController.cs # Tái sử dụng
+│   └── appsettings.json
+├── AccountStatisticsService.Domain/
+│   ├── Entities/
+│   │   ├── Account.cs              # Tái sử dụng
+│   │   └── Transaction.cs          # Tái sử dụng
+│   └── Exceptions/
+├── AccountStatisticsService.Application/
+│   ├── Services/
+│   │   ├── AccountService.cs       # Điều chỉnh
+│   │   └── StatisticsService.cs    # Điều chỉnh
+│   ├── DTOs/                       # Tái sử dụng
+│   ├── Interfaces/
+│   └── Events/                     # Thêm event handlers
+└── AccountStatisticsService.Infrastructure/
+    ├── Persistence/
+    │   ├── AccountStatisticsDbContext.cs
+    │   └── Repositories/           # Tái sử dụng
+    ├── Services/
+    │   ├── UserServiceClient.cs    # Client gọi User Service
+    │   └── SessionServiceClient.cs # Client gọi Session Service
+    └── Events/
+        └── MassTransitConfiguration.cs
+
+
+2.4. API Gateway
+InternetCafe.Microservices/Gateway/InternetCafe.Gateway/
+├── Program.cs
+├── ocelot.json            # Cấu hình routing
+├── Startup.cs
+└── appsettings.json
+
+------------------------------------Giai đoạn 3: Điều chỉnh Database Schema------------------------------------
+
+3.1. Auth & User Service Database
+sql-- Tạo database riêng
+CREATE DATABASE InternetCafe_UserDb;
+GO
+
+USE InternetCafe_UserDb;
+GO
+
+-- Tái sử dụng schema hiện tại cho bảng Users
+CREATE TABLE [dbo].[Users] (
+    -- Giữ nguyên cấu trúc từ bảng Users hiện tại
+);
+
+
+3.2. Computer & Session Service Database
+sql-- Tạo database riêng
+CREATE DATABASE InternetCafe_ComputerSessionDb;
+GO
+
+USE InternetCafe_ComputerSessionDb;
+GO
+
+-- Tái sử dụng schema cho Computers và Sessions
+CREATE TABLE [dbo].[Computers] (
+    -- Giữ nguyên cấu trúc bảng Computers
+);
+
+CREATE TABLE [dbo].[Sessions] (
+    -- Giữ nguyên cấu trúc bảng Sessions
+    -- Thêm UserId cho foreign key reference
+    [UserId] INT NOT NULL
+);
+
+-- Tạo View để xem thông tin User từ User Service database
+CREATE VIEW [dbo].[UserView] AS
+SELECT Id, Username, Email, FullName, Role, Status
+FROM [InternetCafe_UserDb].[dbo].[Users];
+3.3. Account & Statistics Service Database
+sql-- Tạo database riêng
+CREATE DATABASE InternetCafe_AccountStatsDb;
+GO
+
+USE InternetCafe_AccountStatsDb;
+GO
+
+-- Tái sử dụng schema cho Accounts và Transactions
+CREATE TABLE [dbo].[Accounts] (
+    -- Giữ nguyên cấu trúc bảng Accounts
+    -- Thêm UserId cho foreign key reference
+    [UserId] INT NOT NULL
+);
+
+CREATE TABLE [dbo].[Transactions] (
+    -- Giữ nguyên cấu trúc bảng Transactions
+    -- Thêm SessionId cho foreign key reference (nếu cần)
+    [SessionId] INT NULL
+);
+
+-- Tạo View để xem thông tin User từ User Service database
+CREATE VIEW [dbo].[UserView] AS
+SELECT Id, Username, Email, FullName, Role, Status
+FROM [InternetCafe_UserDb].[dbo].[Users];
+
+-- Tạo View để xem thông tin Session từ Session Service database
+CREATE VIEW [dbo].[SessionView] AS
+SELECT Id, UserId, ComputerId, StartTime, EndTime, Duration, TotalCost, Status
+FROM [InternetCafe_ComputerSessionDb].[dbo].[Sessions];
+
+
+------------------------------------Giai đoạn 4: Implement Giao tiếp Giữa các Service------------------------------------
+
+
+4.1. HTTP Clients
+Tạo các HTTP client để giao tiếp giữa các service:
+csharp// User Service Client (được sử dụng bởi các service khác)
+public class UserServiceClient : IUserServiceClient
+{
+    private readonly HttpClient _httpClient;
+    
+    public UserServiceClient(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
+    
+    public async Task<UserDTO> GetUserByIdAsync(int userId)
+    {
+        var response = await _httpClient.GetAsync($"/api/user/{userId}");
+        // Xử lý response...
+    }
+    
+    // Các method khác...
+}
+
+4.2. Message Broker Configuration (RabbitMQ)
+csharp// Trong StartUp.cs của mỗi service
+services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("rabbitmq", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+        
+        // Đăng ký consumer
+        cfg.ConfigureEndpoints(context);
+    });
+    
+    // Đăng ký event consumers
+    x.AddConsumer<UserCreatedEventConsumer>();
+    x.AddConsumer<SessionStartedEventConsumer>();
+});
+
+4.3. Event Publishers & Consumers
+csharp// Event model dùng chung
+public class SessionStartedEvent
+{
+    public int SessionId { get; set; }
+    public int UserId { get; set; }
+    public DateTime StartTime { get; set; }
+    public int ComputerId { get; set; }
+}
+
+// Publisher trong SessionService
+public class SessionService : ISessionService
+{
+    private readonly IPublishEndpoint _publishEndpoint;
+    
+    public async Task<SessionDTO> StartSessionAsync(StartSessionDTO dto)
+    {
+        // Logic khởi tạo session...
+        
+        // Publish event
+        await _publishEndpoint.Publish(new SessionStartedEvent
+        {
+            SessionId = session.Id,
+            UserId = session.UserId,
+            StartTime = session.StartTime,
+            ComputerId = session.ComputerId
+        });
+        
+        return sessionDto;
+    }
+}
+
+// Consumer trong AccountService
+public class SessionStartedEventConsumer : IConsumer<SessionStartedEvent>
+{
+    private readonly IAccountService _accountService;
+    
+    public async Task Consume(ConsumeContext<SessionStartedEvent> context)
+    {
+        var @event = context.Message;
+        // Xử lý event, ví dụ: reserved balance cho session
+    }
+}
+
+------------------------------------Giai đoạn 5: Docker & Deployment------------------------------------
+5.1. Dockerfile cho mỗi service
+dockerfile# Ví dụ Dockerfile cho Auth & User Service
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["AuthUserService.API/AuthUserService.API.csproj", "AuthUserService.API/"]
+COPY ["AuthUserService.Application/AuthUserService.Application.csproj", "AuthUserService.Application/"]
+# ... Các project khác
+RUN dotnet restore "AuthUserService.API/AuthUserService.API.csproj"
+COPY . .
+WORKDIR "/src/AuthUserService.API"
+RUN dotnet build "AuthUserService.API.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "AuthUserService.API.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "AuthUserService.API.dll"]
+5.2. Docker Compose
+yamlversion: '3.8'
+
+services:
+  # API Gateway
+  gateway:
+    build:
+      context: ./Gateway/InternetCafe.Gateway
+    ports:
+      - "5000:80"
+    depends_on:
+      - auth-user-service
+      - computer-session-service
+      - account-statistics-service
+    networks:
+      - internetcafe-network
+
+  # Auth & User Service  
+  auth-user-service:
+    build:
+      context: ./Services/AuthUserService
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_UserDb;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
+    depends_on:
+      - sql-server
+    networks:
+      - internetcafe-network
+
+  # Computer & Session Service
+  computer-session-service:
+    build:
+      context: ./Services/ComputerSessionService
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_ComputerSessionDb;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
+      - ServiceUrls__AuthUserService=http://auth-user-service
+      - ServiceUrls__AccountStatisticsService=http://account-statistics-service
+    depends_on:
+      - sql-server
+      - auth-user-service
+      - rabbitmq
+    networks:
+      - internetcafe-network
+
+  # Account & Statistics Service
+  account-statistics-service:
+    build:
+      context: ./Services/AccountStatisticsService
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_AccountStatsDb;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
+      - ServiceUrls__AuthUserService=http://auth-user-service
+      - ServiceUrls__ComputerSessionService=http://computer-session-service
+    depends_on:
+      - sql-server
+      - auth-user-service
+      - rabbitmq
+    networks:
+      - internetcafe-network
+
+  # SQL Server
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrongPassword!
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - internetcafe-network
+
+  # RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - internetcafe-network
+
+networks:
+  internetcafe-network:
+
+volumes:
+  sqlserver-data:
+5.3. API Gateway Configuration (Ocelot)
+json{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/auth/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "auth-user-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/auth/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/user/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "auth-user-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/user/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/computer/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "computer-session-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/computer/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/session/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "computer-session-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/session/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/account/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "account-statistics-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/account/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/statistics/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "account-statistics-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/statistics/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://gateway"
+  }
+}
+------------------------------------Giai đoạn 6: CI/CD Pipeline------------------------------------
+6.1. GitHub Actions Workflow
+yamlname: InternetCafe Microservices CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --no-restore
+    
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+  
+  build_and_push_images:
+    needs: build_and_test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    
+    - name: Build and push Auth User Service
+      uses: docker/build-push-action@v5
+      with:
+        context: ./Services/AuthUserService
+        push: true
+        tags: yourcompany/internetcafe-auth-user-service:latest
+    
+    - name: Build and push Computer Session Service
+      uses: docker/build-push-action@v5
+      with:
+        context: ./Services/ComputerSessionService
+        push: true
+        tags: yourcompany/internetcafe-computer-session-service:latest
+    
+    - name: Build and push Account Statistics Service
+      uses: docker/build-push-action@v5
+      with:
+        context: ./Services/AccountStatisticsService
+        push: true
+        tags: yourcompany/internetcafe-account-statistics-service:latest
+    
+    - name: Build and push API Gateway
+      uses: docker/build-push-action@v5
+      with:
+        context: ./Gateway/InternetCafe.Gateway
+        push: true
+        tags: yourcompany/internetcafe-gateway:latest		

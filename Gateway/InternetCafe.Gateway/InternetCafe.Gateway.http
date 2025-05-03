@@ -1,0 +1,6 @@
+@InternetCafe.Gateway_HostAddress = http://localhost:5278
+
+GET {{InternetCafe.Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
