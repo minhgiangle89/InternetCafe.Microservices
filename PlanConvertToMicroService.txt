@@ -83,38 +83,66 @@ InternetCafe.Microservices/Services/ComputerSessionService/
     └── Extensions/
 
 
-2.3. Account & Statistics Service
-InternetCafe.Microservices/Services/AccountStatisticsService/
-├── AccountStatisticsService.API/
+2.3. Account & Transaction Service
+InternetCafe.Microservices/Services/AccountService/
+├── AccountService.API/
 │   ├── Program.cs
 │   ├── Controllers/
-│   │   ├── AccountController.cs    # Tái sử dụng
-│   │   └── StatisticsController.cs # Tái sử dụng
+│   │   └── AccountController.cs    # Tái sử dụng
 │   └── appsettings.json
-├── AccountStatisticsService.Domain/
+├── AccountService.Domain/
 │   ├── Entities/
 │   │   ├── Account.cs              # Tái sử dụng
 │   │   └── Transaction.cs          # Tái sử dụng
 │   └── Exceptions/
-├── AccountStatisticsService.Application/
+├── AccountService.Application/
 │   ├── Services/
-│   │   ├── AccountService.cs       # Điều chỉnh
-│   │   └── StatisticsService.cs    # Điều chỉnh
-│   ├── DTOs/                       # Tái sử dụng
+│   │   └── AccountService.cs       # Điều chỉnh cho microservice
+│   ├── DTOs/                       # Tái sử dụng DTOs liên quan
 │   ├── Interfaces/
-│   └── Events/                     # Thêm event handlers
-└── AccountStatisticsService.Infrastructure/
+│   └── Events/                     # Thêm event publishers/handlers
+└── AccountService.Infrastructure/
     ├── Persistence/
-    │   ├── AccountStatisticsDbContext.cs
-    │   └── Repositories/           # Tái sử dụng
+    │   ├── AccountDbContext.cs
+    │   └── Repositories/           # Tái sử dụng repositories
     ├── Services/
     │   ├── UserServiceClient.cs    # Client gọi User Service
     │   └── SessionServiceClient.cs # Client gọi Session Service
     └── Events/
         └── MassTransitConfiguration.cs
-
-
-2.4. API Gateway
+		
+2.4. Statistics & Reporting Service
+InternetCafe.Microservices/Services/StatisticsService/
+├── StatisticsService.API/
+│   ├── Program.cs
+│   ├── Controllers/
+│   │   └── StatisticsController.cs # Tái sử dụng
+│   └── appsettings.json
+├── StatisticsService.Domain/
+│   ├── Models/                     # Mô hình dữ liệu phân tích 
+│   │   ├── UserStatistics.cs
+│   │   ├── SessionStatistics.cs
+│   │   └── RevenueStatistics.cs
+│   └── Exceptions/
+├── StatisticsService.Application/
+│   ├── Services/
+│   │   └── StatisticsService.cs    # Điều chỉnh cho microservice
+│   ├── DTOs/                       # Tái sử dụng DTOs liên quan
+│   ├── Interfaces/
+│   └── Events/                     # Event consumers
+└── StatisticsService.Infrastructure/
+    ├── Persistence/
+    │   ├── StatisticsDbContext.cs
+    │   └── Repositories/           # Đọc dữ liệu từ các nguồn khác
+    ├── Services/
+    │   ├── UserServiceClient.cs    # Client gọi User Service
+    │   ├── SessionServiceClient.cs # Client gọi Session Service
+    │   └── AccountServiceClient.cs # Client gọi Account Service
+    └── Events/
+        └── MassTransitConfiguration.cs
+		
+		
+2.5. API Gateway
 InternetCafe.Microservices/Gateway/InternetCafe.Gateway/
 ├── Program.cs
 ├── ocelot.json            # Cấu hình routing
