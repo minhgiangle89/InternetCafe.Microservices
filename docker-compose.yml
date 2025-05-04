@@ -10,7 +10,8 @@ services:
     depends_on:
       - auth-user-service
       - computer-session-service
-      - account-statistics-service
+      - account-service
+      - statistics-service
     networks:
       - internetcafe-network
 

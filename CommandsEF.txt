@@ -1,0 +1,5 @@
+Remove-Migration -Project InternetCafe.Infrastructure
+
+Add-Migration InitialCreate -Project AuthUserService.Infrastructure -StartupProject AuthUserService.API
+
+Update-Database -Project AuthUserService.Infrastructure -StartupProject AuthUserService.API
