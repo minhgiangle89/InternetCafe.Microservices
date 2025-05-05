@@ -1,44 +1,28 @@
-﻿using AuthUserService.Application.Interfaces;
-using AuthUserService.Domain.Entities;
+﻿using ComputerSessionService.Domain.Entities;
 using InternetCafe.Common.Entities;
 using InternetCafe.Common.Enums;
 using InternetCafe.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 
-namespace AuthUserService.Infrastructure.Persistence
+
+namespace ComputerSessionService.Infrastructure.Persistence
 {
-    public class AuthUserDbContext : DbContext
+    public class ComputerSessionDbContext : DbContext
     {
         private readonly ICurrentUserService _currentUserService;
-        public AuthUserDbContext(DbContextOptions<AuthUserDbContext> options, ICurrentUserService currentUserService) : base(options)
+
+        public ComputerSessionDbContext(DbContextOptions<ComputerSessionDbContext> options, ICurrentUserService currentUserService)
+            : base(options)
         {
             _currentUserService = currentUserService;
         }
-        public DbSet<User> Users { get; set; }
+
+        public DbSet<Computer> Computers { get; set; }
+        public DbSet<Session> Sessions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.ToTable("Users");
-
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).UseIdentityColumn();
-
-                entity.Property(e => e.Username).IsRequired().HasMaxLength(50);
-                entity.HasIndex(e => e.Username).IsUnique();
-
-                entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
-                entity.HasIndex(e => e.Email).IsUnique();
-
-                entity.Property(e => e.PasswordHash).IsRequired();
-                entity.Property(e => e.FullName).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.PhoneNumber).HasMaxLength(20);
-                entity.Property(e => e.Address).HasMaxLength(200);
-            });
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ComputerSessionDbContext).Assembly);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

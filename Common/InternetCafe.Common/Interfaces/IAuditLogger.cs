@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AuthUserService.Application.Interfaces
+namespace InternetCafe.Common.Interfaces
 {
     public interface IAuditLogger
     {

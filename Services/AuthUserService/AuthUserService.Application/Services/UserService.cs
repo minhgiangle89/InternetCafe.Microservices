@@ -5,6 +5,7 @@ using AuthUserService.Domain.Entities;
 using AuthUserService.Domain.Exceptions;
 using AutoMapper;
 using InternetCafe.Common.Enums;
+using InternetCafe.Common.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Security.Authentication;
 

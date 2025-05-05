@@ -1,12 +1,7 @@
 ﻿using InternetCafe.Common.Interfaces;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace AuthUserService.Application.Services
+namespace ComputerSessionService.Application.Services
 {
     public class AuditLogger : IAuditLogger
     {
@@ -28,20 +23,7 @@ namespace AuthUserService.Application.Services
 
         public Task LogLoginAttemptAsync(string username, bool success, string ipAddress, DateTime timestamp)
         {
-            if (success)
-            {
-                _logger.LogInformation(
-                    string.Format("LOGIN: User={0} successfully logged in from IP={1} at {2}",
-                    username, ipAddress, timestamp));
-            }
-            else
-            {
-                _logger.LogWarning(
-                    string.Format("LOGIN FAILED: User={0} failed to log in from IP={1} at {2}",
-                    username, ipAddress, timestamp));
-            }
-
-            return Task.CompletedTask;
+            throw new NotImplementedException();
         }
 
         public Task LogSystemEventAsync(string eventType, string description, DateTime timestamp, int? userId = null)

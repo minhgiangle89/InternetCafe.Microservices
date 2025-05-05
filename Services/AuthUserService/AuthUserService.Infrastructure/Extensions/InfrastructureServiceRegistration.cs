@@ -2,18 +2,14 @@
 using AuthUserService.Application.Interfaces.Services;
 using AuthUserService.Application.Interfaces;
 using AuthUserService.Application.Services;
-using AuthUserService.Infrastructure.Identity;
+using AuthUserService.Infrastructure.Service;
 using AuthUserService.Infrastructure.Repositories;
 using InternetCafe.Common.Repositories.IRepositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AuthUserService.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using InternetCafe.Common.Interfaces;
 
 namespace AuthUserService.Infrastructure.Extensions
 {

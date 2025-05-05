@@ -1,4 +1,4 @@
-﻿using AuthUserService.Application.Interfaces;
+﻿using InternetCafe.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AuthUserService.Infrastructure.Identity
+namespace ComputerSessionService.Infrastructure.Services
 {
     public class CurrentUserService : ICurrentUserService
     {

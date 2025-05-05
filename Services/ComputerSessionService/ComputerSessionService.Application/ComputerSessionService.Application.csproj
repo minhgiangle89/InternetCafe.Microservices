@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="14.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+    <ProjectReference Include="..\..\..\Common\InternetCafe.Common\InternetCafe.Common.csproj" />
+    <ProjectReference Include="..\..\AuthUserService\AuthUserService.Application\AuthUserService.Application.csproj" />
+    <ProjectReference Include="..\ComputerSessionService.Domain\ComputerSessionService.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

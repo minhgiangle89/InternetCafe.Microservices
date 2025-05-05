@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\InternetCafe.Common\InternetCafe.Common.csproj" />
     <ProjectReference Include="..\AuthUserService.Application\AuthUserService.Application.csproj" />
     <ProjectReference Include="..\AuthUserService.Domain\AuthUserService.Domain.csproj" />
   </ItemGroup>

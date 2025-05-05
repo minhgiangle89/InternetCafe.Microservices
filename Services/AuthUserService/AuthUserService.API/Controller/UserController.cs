@@ -7,6 +7,7 @@ using InternetCafe.Common.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Authentication;
+using InternetCafe.Common.Interfaces;
 
 namespace AuthUserService.API.Controller
 {

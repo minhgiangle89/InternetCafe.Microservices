@@ -11,6 +11,7 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
+using InternetCafe.Common.Interfaces;
 
 namespace AuthUserService.Application.Services
 {
