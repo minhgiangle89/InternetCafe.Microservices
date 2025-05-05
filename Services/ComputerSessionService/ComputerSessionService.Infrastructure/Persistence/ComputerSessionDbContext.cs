@@ -11,8 +11,7 @@ namespace ComputerSessionService.Infrastructure.Persistence
     {
         private readonly ICurrentUserService _currentUserService;
 
-        public ComputerSessionDbContext(DbContextOptions<ComputerSessionDbContext> options, ICurrentUserService currentUserService)
-            : base(options)
+        public ComputerSessionDbContext(DbContextOptions<ComputerSessionDbContext> options, ICurrentUserService currentUserService) : base(options)
         {
             _currentUserService = currentUserService;
         }
@@ -22,6 +21,7 @@ namespace ComputerSessionService.Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ComputerSessionDbContext).Assembly);
         }
 

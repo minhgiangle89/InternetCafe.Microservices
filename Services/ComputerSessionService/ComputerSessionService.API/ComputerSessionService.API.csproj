@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <InvariantGlobalization>true</InvariantGlobalization>
+    <InvariantGlobalization>false</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ComputerSessionService.Application\ComputerSessionService.Application.csproj" />
     <ProjectReference Include="..\ComputerSessionService.Domain\ComputerSessionService.Domain.csproj" />
+    <ProjectReference Include="..\ComputerSessionService.Infrastructure\ComputerSessionService.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

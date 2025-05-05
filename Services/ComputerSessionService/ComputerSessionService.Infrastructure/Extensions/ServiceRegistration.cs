@@ -37,6 +37,9 @@ namespace ComputerSessionService.Infrastructure.Extensions
                 client.BaseAddress = new Uri(configuration["ServiceUrls:AccountService"]);
             });
 
+            // Logging
+            services.AddScoped<IAuditLogger, AuditLogger>();
+
             // Services
             services.AddScoped<IComputerService, ComputerService>();
             services.AddScoped<ISessionService, SessionService>();

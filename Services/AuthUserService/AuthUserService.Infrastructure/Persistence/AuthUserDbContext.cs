@@ -21,6 +21,7 @@ namespace AuthUserService.Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("Users");

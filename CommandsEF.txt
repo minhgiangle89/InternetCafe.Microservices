@@ -1,5 +1,9 @@
-Remove-Migration -Project InternetCafe.Infrastructure
-
+1/AuthUserService
+Remove-Migration -Project AuthUserService.Infrastructure
 Add-Migration InitialCreate -Project AuthUserService.Infrastructure -StartupProject AuthUserService.API
-
 Update-Database -Project AuthUserService.Infrastructure -StartupProject AuthUserService.API
+
+2/ComputerSessionService
+Remove-Migration -Project ComputerSessionService.Infrastructure
+Add-Migration InitialCreate -Project ComputerSessionService.Infrastructure -StartupProject ComputerSessionService.API
+Update-Database -Project ComputerSessionService.Infrastructure -StartupProject ComputerSessionService.API
