@@ -33,7 +33,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = authSettings["Issuer"],
             ValidAudience = authSettings["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSettings["SecretKey"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSettings["SecretKey"])),
+            RequireSignedTokens = false,
+            RequireExpirationTime = true,
+            ClockSkew = TimeSpan.Zero
         };
     });
 

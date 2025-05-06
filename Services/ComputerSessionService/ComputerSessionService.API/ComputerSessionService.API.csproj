@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\InternetCafe.Common.Api\InternetCafe.Common.Api.csproj" />
     <ProjectReference Include="..\ComputerSessionService.Application\ComputerSessionService.Application.csproj" />
     <ProjectReference Include="..\ComputerSessionService.Domain\ComputerSessionService.Domain.csproj" />
     <ProjectReference Include="..\ComputerSessionService.Infrastructure\ComputerSessionService.Infrastructure.csproj" />

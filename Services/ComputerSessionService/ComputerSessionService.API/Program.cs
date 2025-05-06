@@ -9,6 +9,11 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddEndpointsApiExplorer();
 
+
+// Register authentication services
+builder.Services.AddAuthenticationServices(builder.Configuration);
+
+
 // Configure CORS
 builder.Services.AddCors(options =>
 {
