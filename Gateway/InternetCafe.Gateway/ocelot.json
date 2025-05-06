@@ -76,7 +76,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5026
+          "Port": 5190
         }
       ],
       "UpstreamPathTemplate": "/api/account/{everything}",
