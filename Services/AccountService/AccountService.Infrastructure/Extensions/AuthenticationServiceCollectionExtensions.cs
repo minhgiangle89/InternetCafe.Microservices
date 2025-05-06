@@ -1,12 +1,16 @@
-﻿using ComputerSessionService.Application.DTOs.Authentication;
+﻿using AccountService.Application.DTOs.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ComputerSessionService.Infrastructure.Extensions
+namespace AccountService.Infrastructure.Extensions
 {
     public static class AuthenticationServiceCollectionExtensions
     {
