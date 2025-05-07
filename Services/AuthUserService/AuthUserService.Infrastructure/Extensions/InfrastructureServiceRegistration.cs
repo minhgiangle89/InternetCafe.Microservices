@@ -33,6 +33,12 @@ namespace AuthUserService.Infrastructure.Extensions
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<ITokenGenerator, TokenGenerator>();
 
+            // HTTP Client for AccountService
+            services.AddHttpClient<IAccountServiceClient, AccountServiceClient>(client =>
+            {
+                client.BaseAddress = new Uri(configuration["ServiceUrls:AccountService"]);
+            });
+
             // Logging
             services.AddScoped<IAuditLogger, AuditLogger>();
 

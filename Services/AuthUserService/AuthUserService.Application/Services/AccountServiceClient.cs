@@ -1,10 +1,13 @@
-﻿using ComputerSessionService.Application.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using AuthUserService.Application.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
-namespace ComputerSessionService.Infrastructure.Services
+namespace AuthUserService.Application.Services
 {
     public class AccountServiceClient : IAccountServiceClient
     {
@@ -31,32 +34,12 @@ namespace ComputerSessionService.Infrastructure.Services
             }
         }
 
-        public async Task<bool> ChargeForSessionAsync(int accountId, int sessionId, decimal amount)
+        public async Task CreateAccountAsync(int userId)
         {
             AddAuthorizationHeader();
-            var request = new
-            {
-                AccountId = accountId,
-                SessionId = sessionId,
-                Amount = amount
-            };
 
-            var response = await _httpClient.PostAsJsonAsync("/api/account/charge", request);
+            var response = await _httpClient.PostAsJsonAsync("/api/account", userId);
             response.EnsureSuccessStatusCode();
-
-            return true;
-        }
-
-        public async Task<decimal> GetAccountBalanceAsync(int userId)
-        {
-            AddAuthorizationHeader();
-            var response = await _httpClient.GetFromJsonAsync<AccountBalanceResponse>($"/api/account/user/{userId}/balance");
-            return response?.Balance ?? 0;
-        }
-
-        private class AccountBalanceResponse
-        {
-            public decimal Balance { get; set; }
         }
     }
 }

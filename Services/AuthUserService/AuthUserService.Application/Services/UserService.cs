@@ -19,19 +19,21 @@ namespace AuthUserService.Application.Services
         private readonly IMapper _mapper;
         private readonly IAuditLogger _auditLogger;
         private readonly ILogger<UserService> _logger;
+        private readonly IAccountServiceClient _accountServiceClient;
 
-        public UserService(
-            IUnitOfWork unitOfWork,
-            IPasswordHasher passwordHasher,
-            IMapper mapper,
-            IAuditLogger auditLogger,
-            ILogger<UserService> logger)
+        public UserService(IUnitOfWork unitOfWork,
+                            IPasswordHasher passwordHasher,
+                            IMapper mapper,
+                            IAuditLogger auditLogger,
+                            ILogger<UserService> logger,
+                            IAccountServiceClient accountServiceClient)
         {
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
             _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _auditLogger = auditLogger ?? throw new ArgumentNullException(nameof(auditLogger));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _accountServiceClient = accountServiceClient ?? throw new ArgumentNullException(nameof(accountServiceClient));
         }
 
         public async Task<UserDTO> AuthenticateUserAsync(string username, string password)
@@ -47,7 +49,6 @@ namespace AuthUserService.Application.Services
                 throw new AuthenticationException("Invalid password");
             }
 
-            // Update last login time
             user.LastLoginTime = DateTime.UtcNow;
             await _unitOfWork.Users.UpdateAsync(user);
             await _unitOfWork.CompleteAsync();
@@ -59,7 +60,6 @@ namespace AuthUserService.Application.Services
         {
             try
             {
-                // Validate if username or email already exists
                 var existingUserWithUsername = await _unitOfWork.Users.GetByUsernameAsync(userDTO.Username);
                 if (existingUserWithUsername != null)
                 {
@@ -72,7 +72,6 @@ namespace AuthUserService.Application.Services
                     throw new DuplicateUserException("email", userDTO.Email);
                 }
 
-                // Create new user
                 var user = new User
                 {
                     Username = userDTO.Username,
@@ -90,7 +89,15 @@ namespace AuthUserService.Application.Services
                 await _unitOfWork.Users.AddAsync(user);
                 await _unitOfWork.CompleteAsync();
 
-                // Log user creation
+                try
+                {
+                    await _accountServiceClient.CreateAccountAsync(user.Id);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Không thể tạo tài khoản cho user {UserId}", user.Id);
+                }
+
                 await _auditLogger.LogActivityAsync(
                     "UserCreated",
                     "User",
@@ -116,7 +123,6 @@ namespace AuthUserService.Application.Services
                 throw new UserNotFoundException(userId);
             }
 
-            // Update user properties
             user.Email = userDTO.Email;
             user.FullName = userDTO.FullName;
             user.PhoneNumber = userDTO.PhoneNumber;
@@ -126,7 +132,6 @@ namespace AuthUserService.Application.Services
             await _unitOfWork.Users.UpdateAsync(user);
             await _unitOfWork.CompleteAsync();
 
-            // Log user update
             await _auditLogger.LogActivityAsync(
                 "UserUpdated",
                 "User",
@@ -155,18 +160,15 @@ namespace AuthUserService.Application.Services
                 throw new UserNotFoundException(userId);
             }
 
-            // Verify current password
             if (!_passwordHasher.VerifyPassword(changePasswordDTO.CurrentPassword, user.PasswordHash))
             {
                 throw new AuthenticationException("Current password is incorrect");
             }
 
-            // Update password
             user.PasswordHash = _passwordHasher.HashPassword(changePasswordDTO.NewPassword);
             await _unitOfWork.Users.UpdateAsync(user);
             await _unitOfWork.CompleteAsync();
 
-            // Log password change
             await _auditLogger.LogActivityAsync(
                 "PasswordChanged",
                 "User",
@@ -188,7 +190,6 @@ namespace AuthUserService.Application.Services
             await _unitOfWork.Users.UpdateAsync(user);
             await _unitOfWork.CompleteAsync();
 
-            // Log status change
             await _auditLogger.LogActivityAsync(
                 "UserStatusChanged",
                 "User",
