@@ -7,3 +7,8 @@ Update-Database -Project AuthUserService.Infrastructure -StartupProject AuthUser
 Remove-Migration -Project ComputerSessionService.Infrastructure
 Add-Migration InitialCreate -Project ComputerSessionService.Infrastructure -StartupProject ComputerSessionService.API
 Update-Database -Project ComputerSessionService.Infrastructure -StartupProject ComputerSessionService.API
+
+3/AccountService
+Remove-Migration -Project AccountService.Infrastructure
+Add-Migration InitialCreate -Project AccountService.Infrastructure -StartupProject AccountService.API
+Update-Database -Project AccountService.Infrastructure -StartupProject AccountService.API
