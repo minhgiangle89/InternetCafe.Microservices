@@ -41,9 +41,6 @@
         "AuthenticationProviderKey": "GatewayAuthenticationScheme",
         "AllowedScopes": []
       },
-      "RouteClaimsRequirement": {
-        "Role": "2"
-      },
       "DangerousAcceptAnyServerCertificateValidator": true
     },
     {

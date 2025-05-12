@@ -119,6 +119,7 @@ namespace AuthUserService.API.Controller
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "2")] // Admin only
         [ProducesResponseType(typeof(ApiResponseBase), 200)]
         [ProducesResponseType(typeof(ApiResponseBase), 401)]
         [ProducesResponseType(typeof(ApiResponseBase), 403)]
