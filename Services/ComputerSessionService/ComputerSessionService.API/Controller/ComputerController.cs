@@ -143,7 +143,7 @@ namespace ComputerSessionService.API.Controller
         }
 
         [HttpPut("{id}/status")]
-        [Authorize(Roles = "1,2")] // Staff and Admin only
+        [Authorize(Roles = "2")]
         [ProducesResponseType(typeof(ApiResponseBase), 200)]
         [ProducesResponseType(typeof(ApiResponseBase), 400)]
         [ProducesResponseType(typeof(ApiResponseBase), 401)]
@@ -171,7 +171,7 @@ namespace ComputerSessionService.API.Controller
         }
 
         [HttpPut("{id}/maintenance")]
-        [Authorize(Roles = "1,2")] // Staff and Admin only
+        [Authorize(Roles = "2")]
         [ProducesResponseType(typeof(ApiResponseBase), 200)]
         [ProducesResponseType(typeof(ApiResponseBase), 400)]
         [ProducesResponseType(typeof(ApiResponseBase), 401)]

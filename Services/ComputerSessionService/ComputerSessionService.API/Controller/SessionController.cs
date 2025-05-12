@@ -227,7 +227,7 @@ namespace ComputerSessionService.API.Controller
         }
 
         [HttpPost("{id}/terminate")]
-        [Authorize(Roles = "1,2")] // Staff and Admin only
+        [Authorize(Roles = "2")] 
         [ProducesResponseType(typeof(ApiResponse<SessionDTO>), 200)]
         [ProducesResponseType(typeof(ApiResponse<SessionDTO>), 400)]
         [ProducesResponseType(typeof(ApiResponse<SessionDTO>), 401)]

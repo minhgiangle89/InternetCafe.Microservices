@@ -14,8 +14,7 @@ namespace InternetCafe.Common.Enums
 
     public enum UserRole
     {
-        Customer = 0,
-        Staff = 1,
+        Customer = 1,
         Admin = 2
     }
 

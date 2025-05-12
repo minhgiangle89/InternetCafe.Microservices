@@ -33,6 +33,12 @@ namespace AccountService.Application.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        public async Task<IEnumerable<AccountDTO>> GetAllAccountAsync()
+        {
+            var accounts = await _unitOfWork.Accounts.GetAllAsync();
+            return _mapper.Map<IEnumerable<AccountDTO>>(accounts);
+        }
+
         public async Task<AccountDTO> CreateAccountAsync(int userId)
         {
             try

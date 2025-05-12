@@ -10,7 +10,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/user",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [ "GET", "POST"],
       "DangerousAcceptAnyServerCertificateValidator": true
     },
     {

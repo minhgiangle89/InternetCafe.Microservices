@@ -10,6 +10,7 @@ namespace AccountService.Application.Interfaces.Services
 {
     public interface IAccountService
     {
+        Task<IEnumerable<AccountDTO>> GetAllAccountAsync();
         Task<AccountDTO> CreateAccountAsync(int userId);
         Task<decimal> GetBalanceAsync(int accountId);
         Task<decimal> GetBalanceByUserIdAsync(int userId);

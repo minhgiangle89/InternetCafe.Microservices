@@ -24,6 +24,26 @@ namespace AccountService.API.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        [HttpGet]
+        [Authorize(Roles = "2")] // Admin only
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<AccountDTO>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<AccountDTO>>), 401)]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<AccountDTO>>), 403)]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<AccountDTO>>), 500)]
+        public async Task<ActionResult<ApiResponse<IEnumerable<AccountDTO>>>> GetAllAccounts()
+        {
+            try
+            {
+                var users = await _accountService.GetAllAccountAsync();
+                return Ok(ApiResponseFactory.Success(users, "Lấy tất cả tài khoản thành công"));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lấy danh sách tài khoản");
+                return StatusCode(500, ApiResponseFactory.Fail<IEnumerable<AccountDTO>>("Lỗi server khi lấy danh sách tài khoản"));
+            }
+        }
+
         [HttpPost]
         [Authorize(Roles = "2")] // Admin only
         [ProducesResponseType(typeof(ApiResponse<AccountDTO>), 201)]
@@ -174,7 +194,7 @@ namespace AccountService.API.Controllers
         }
 
         [HttpPost("charge")]
-        [Authorize(Roles = "1,2")] // Staff and Admin only
+        [Authorize(Roles = "2")]
         [ProducesResponseType(typeof(ApiResponse<TransactionDTO>), 200)]
         [ProducesResponseType(typeof(ApiResponseBase), 400)]
         [ProducesResponseType(typeof(ApiResponseBase), 401)]
