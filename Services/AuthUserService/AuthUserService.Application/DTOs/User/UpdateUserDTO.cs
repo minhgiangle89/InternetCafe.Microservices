@@ -13,5 +13,6 @@ namespace AuthUserService.Application.DTOs.User
         public string? PhoneNumber { get; set; }
         public string? Address { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public int Role { get; set; }
     }
 }

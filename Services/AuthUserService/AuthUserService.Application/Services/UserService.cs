@@ -128,7 +128,7 @@ namespace AuthUserService.Application.Services
             user.PhoneNumber = userDTO.PhoneNumber;
             user.Address = userDTO.Address;
             user.DateOfBirth = userDTO.DateOfBirth;
-
+            user.Role  = userDTO.Role;
             await _unitOfWork.Users.UpdateAsync(user);
             await _unitOfWork.CompleteAsync();
 
