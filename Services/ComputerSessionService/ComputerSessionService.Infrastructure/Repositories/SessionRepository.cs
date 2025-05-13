@@ -19,14 +19,14 @@ namespace ComputerSessionService.Infrastructure.Repositories
         public async Task<Session?> GetCurrentSessionByComputerIdAsync(int computerId)
         {
             return await _dbSet
-                .Where(s => s.ComputerId == computerId && s.Status == SessionStatus.Active)
+                .Where(s => s.ComputerId == computerId && s.Status == (int)SessionStatus.Active)
                 .FirstOrDefaultAsync();
         }
 
         public async Task<IReadOnlyList<Session>> GetActiveSessionsAsync()
         {
             return await _dbSet
-                .Where(s => s.Status == SessionStatus.Active)
+                .Where(s => s.Status == (int)SessionStatus.Active)
                 .ToListAsync();
         }
 

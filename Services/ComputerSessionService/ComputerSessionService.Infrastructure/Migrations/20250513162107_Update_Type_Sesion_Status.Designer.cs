@@ -4,6 +4,7 @@ using ComputerSessionService.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComputerSessionService.Infrastructure.Migrations
 {
     [DbContext(typeof(ComputerSessionDbContext))]
-    partial class ComputerSessionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250513162107_Update_Type_Sesion_Status")]
+    partial class Update_Type_Sesion_Status
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,8 +126,9 @@ namespace ComputerSessionService.Infrastructure.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<decimal>("TotalCost")
                         .ValueGeneratedOnAdd()

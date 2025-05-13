@@ -23,7 +23,7 @@ namespace ComputerSessionService.Infrastructure.Persistence.Configurations
 
             entity.Property(e => e.TotalCost).HasColumnType("decimal(18,2)").HasDefaultValue(0);
 
-            entity.Property(e => e.Status).HasConversion<string>();
+            entity.Property(e => e.Status).HasColumnType("int");
 
             entity.Property(e => e.Notes).HasMaxLength(500);
         }

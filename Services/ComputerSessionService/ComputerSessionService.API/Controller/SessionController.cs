@@ -1,4 +1,5 @@
-﻿using ComputerSessionService.Application.DTOs.Session;
+﻿using ComputerSessionService.Application.DTOs.Computer;
+using ComputerSessionService.Application.DTOs.Session;
 using ComputerSessionService.Application.Interfaces.Services;
 using ComputerSessionService.Domain.Exceptions;
 using InternetCafe.Common.Api;
@@ -21,6 +22,26 @@ namespace ComputerSessionService.API.Controller
         {
             _sessionService = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        [HttpGet("computer-status-summary")]
+        [Authorize(Roles = "2")]
+        [ProducesResponseType(typeof(ApiResponse<ComputerStatusSummaryDTO>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<ComputerStatusSummaryDTO>), 401)]
+        [ProducesResponseType(typeof(ApiResponse<ComputerStatusSummaryDTO>), 403)]
+        [ProducesResponseType(typeof(ApiResponseBase), 500)]
+        public async Task<ActionResult<ApiResponse<ComputerStatusSummaryDTO>>> GetComputerStatusSummary()
+        {
+            try
+            {
+                var computerStatusSummary = await _sessionService.GetComputerStatusSummaryAsync();
+                return Ok(ApiResponseFactory.Success(computerStatusSummary, "Tổng tình trạng máy tính được tải thành công"));
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, "Lỗi khi lấy tổng tình trạng máy tính");
+                return StatusCode(500, ApiResponseFactory.Fail<ComputerStatusSummaryDTO>("Lỗi server khi lấy tổng tình trạng máy tính"));
+            }
         }
 
         [HttpPost("start")]

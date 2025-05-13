@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using ComputerSessionService.Application.DTOs.Computer;
 using ComputerSessionService.Application.DTOs.Session;
 using ComputerSessionService.Application.Interfaces;
+using ComputerSessionService.Application.Interfaces.Repositories;
 using ComputerSessionService.Application.Interfaces.Services;
 using ComputerSessionService.Domain.Entities;
 using ComputerSessionService.Domain.Exceptions;
@@ -77,7 +79,7 @@ namespace ComputerSessionService.Application.Services
                     StartTime = DateTime.UtcNow,
                     Duration = TimeSpan.Zero,
                     TotalCost = 0,
-                    Status = SessionStatus.Active
+                    Status = (int)SessionStatus.Active
                 };
 
                 await _unitOfWork.Sessions.AddAsync(session);
@@ -121,7 +123,7 @@ namespace ComputerSessionService.Application.Services
                     throw new SessionNotFoundException(endSessionDTO.SessionId);
                 }
 
-                if (session.Status != SessionStatus.Active)
+                if (session.Status != (int)SessionStatus.Active)
                 {
                     throw new Exception($"Session with ID {endSessionDTO.SessionId} is not active.");
                 }
@@ -139,7 +141,7 @@ namespace ComputerSessionService.Application.Services
                 session.EndTime = endTime;
                 session.Duration = duration;
                 session.TotalCost = cost;
-                session.Status = SessionStatus.Completed;
+                session.Status = (int)SessionStatus.Completed;
                 session.Notes = endSessionDTO.Notes;
 
                 await _unitOfWork.Sessions.UpdateAsync(session);
@@ -300,7 +302,7 @@ namespace ComputerSessionService.Application.Services
         public async Task<bool> HasActiveSessionAsync(int userId)
         {
             var sessions = await _unitOfWork.Sessions.FindAsync(s =>
-                s.UserId == userId && s.Status == SessionStatus.Active);
+                s.UserId == userId && s.Status == (int)SessionStatus.Active);
 
             return sessions.Any();
         }
@@ -317,7 +319,7 @@ namespace ComputerSessionService.Application.Services
                     throw new SessionNotFoundException(sessionId);
                 }
 
-                if (session.Status != SessionStatus.Active)
+                if (session.Status != (int)SessionStatus.Active)
                 {
                     throw new Exception($"Session with ID {sessionId} is not active.");
                 }
@@ -335,7 +337,7 @@ namespace ComputerSessionService.Application.Services
                 session.EndTime = endTime;
                 session.Duration = duration;
                 session.TotalCost = cost;
-                session.Status = SessionStatus.Terminated;
+                session.Status = (int)SessionStatus.Terminated;
                 session.Notes = reason;
 
                 await _unitOfWork.Sessions.UpdateAsync(session);
@@ -382,6 +384,76 @@ namespace ComputerSessionService.Application.Services
             sessionDetailsDto.ComputerName = computer?.Name ?? "Unknown";
 
             return sessionDetailsDto;
+        }
+
+        public async Task<ComputerStatusSummaryDTO> GetComputerStatusSummaryAsync()
+        {
+            var allComputers = await _unitOfWork.Computers.GetAllAsync();
+            var activeSessions = await _unitOfWork.Sessions.GetActiveSessionsAsync();
+            var computerSessionMap = activeSessions.ToDictionary(s => s.ComputerId, s => s);
+
+            var computerDetails = new List<ComputerStatusDetailDTO>();
+
+            foreach (var computer in allComputers)
+            {
+                var detail = new ComputerStatusDetailDTO
+                {
+                    Id = computer.Id,
+                    Name = computer.Name,
+                    IpAddress = computer.IPAddress,
+                    Location = computer.Location,
+                    Status = (int)computer.Status,
+                    StatusText = GetStatusText(computer.Status),
+                    HourlyRate = computer.HourlyRate
+                };
+
+                if (computerSessionMap.TryGetValue(computer.Id, out var activeSession))
+                {
+                    detail.CurrentSessionId = activeSession.Id;
+                    detail.CurrentUserId = activeSession.UserId;
+                    detail.SessionStartTime = activeSession.StartTime;
+                    detail.SessionDuration = CalculateDuration(activeSession.StartTime);
+                    detail.CurrentSessionCost = await CalculateSessionCostAsync(activeSession.Id);
+                    detail.Status = (int)ComputerStatus.InUse;
+                    detail.StatusText = "Đang sử dụng";
+                }
+
+                computerDetails.Add(detail);
+            }
+            var summary = new ComputerStatusSummaryDTO
+            {
+                TotalComputers = allComputers.Count(),
+                AvailableComputers = computerDetails.Count(c => c.Status == (int)ComputerStatus.Available),
+                ComputersInUse = computerDetails.Count(c => c.Status == (int)ComputerStatus.InUse),
+                ComputersInMaintenance = computerDetails.Count(c => c.Status == (int)ComputerStatus.Maintenance),
+                ComputersOutOfOrder = computerDetails.Count(c => c.Status == (int)ComputerStatus.OutOfOrder),
+                ComputerDetails = computerDetails.OrderBy(c => c.Name).ToList()
+            };
+
+            return summary;
+        }
+
+        private string GetStatusText(int computerStatus)
+        {
+            switch (computerStatus)
+            {
+                case (int)ComputerStatus.Available:
+                    return "Khả dụng";
+                case (int)ComputerStatus.InUse:
+                    return "Đang sử dụng";
+                case (int)ComputerStatus.Maintenance:
+                    return "Bảo trì";
+                case (int)ComputerStatus.OutOfOrder:
+                    return "Hỏng";
+                default:
+                    return "Không xác định";
+            }
+        }
+
+        private string CalculateDuration(DateTime startTime)
+        {
+            var duration = DateTime.UtcNow - startTime;
+            return $"{(int)duration.TotalHours:00}:{duration.Minutes:00}:{duration.Seconds:00}";
         }
     }
 }

@@ -12,7 +12,7 @@ namespace ComputerSessionService.Domain.Entities
         public DateTime? EndTime { get; set; }
         public TimeSpan Duration { get; set; }
         public decimal TotalCost { get; set; }
-        public SessionStatus Status { get; set; } = SessionStatus.Active;
+        public int Status { get; set; } = (int)SessionStatus.Active;
         public string? Notes { get; set; }
 
         public Computer Computer { get; set; } = null!;

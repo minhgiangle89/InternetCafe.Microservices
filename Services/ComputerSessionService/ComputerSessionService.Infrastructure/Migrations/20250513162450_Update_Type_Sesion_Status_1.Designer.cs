@@ -4,6 +4,7 @@ using ComputerSessionService.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComputerSessionService.Infrastructure.Migrations
 {
     [DbContext(typeof(ComputerSessionDbContext))]
-    partial class ComputerSessionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250513162450_Update_Type_Sesion_Status_1")]
+    partial class Update_Type_Sesion_Status_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

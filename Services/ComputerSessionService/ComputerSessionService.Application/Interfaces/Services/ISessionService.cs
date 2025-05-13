@@ -1,4 +1,5 @@
-﻿using ComputerSessionService.Application.DTOs.Session;
+﻿using ComputerSessionService.Application.DTOs.Computer;
+using ComputerSessionService.Application.DTOs.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,5 +21,6 @@ namespace ComputerSessionService.Application.Interfaces.Services
         Task<bool> HasActiveSessionAsync(int userId);
         Task<SessionDTO> TerminateSessionAsync(int sessionId, string reason);
         Task<SessionDetailsDTO> GetSessionDetailsAsync(int sessionId);
+        Task<ComputerStatusSummaryDTO> GetComputerStatusSummaryAsync();
     }
 }
