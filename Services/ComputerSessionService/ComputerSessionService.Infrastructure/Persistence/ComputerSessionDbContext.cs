@@ -41,35 +41,39 @@ namespace ComputerSessionService.Infrastructure.Persistence
         {
             var entries = ChangeTracker.Entries<BaseEntity>();
             var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-
+            var now = TimeZoneInfo.ConvertTime(DateTime.Now, vietnamTimeZone);
             foreach (var entry in entries)
             {
-                var now = TimeZoneInfo.ConvertTime(DateTime.Now, vietnamTimeZone);
-                switch (entry.State)
+                if (entry.Entity is BaseEntity baseEntity)
                 {
-                    case EntityState.Added:
-                        entry.Entity.Creation_Timestamp = now;
-                        entry.Entity.Creation_EmpId = _currentUserService.UserId ?? 0;
-                        entry.Entity.LastUpdated_Timestamp = now;
-                        entry.Entity.LastUpdated_EmpId = _currentUserService.UserId ?? 0;
-                        entry.Entity.Status = (int)Status.Active;
-                        break;
+                    switch (entry.State)
+                    {
+                        case EntityState.Added:
+                            entry.Entity.Creation_Timestamp = now;
+                            entry.Entity.Creation_EmpId = _currentUserService.UserId ?? 0;
+                            entry.Entity.LastUpdated_Timestamp = now;
+                            entry.Entity.LastUpdated_EmpId = _currentUserService.UserId ?? 0;
+                            entry.Entity.Status = (int)Status.Active;
+                            break;
 
-                    case EntityState.Modified:
-                        entry.Entity.LastUpdated_Timestamp = now;
-                        entry.Entity.LastUpdated_EmpId = _currentUserService.UserId ?? 0;
+                        case EntityState.Modified:
+                            entry.Entity.LastUpdated_Timestamp = now;
+                            entry.Entity.LastUpdated_EmpId = _currentUserService.UserId ?? 0;
 
-                        entry.Property(x => x.Creation_Timestamp).IsModified = false;
-                        entry.Property(x => x.Creation_EmpId).IsModified = false;
-                        break;
-                    case EntityState.Deleted:
-                        entry.State = EntityState.Modified;
-                        entry.Entity.Status = (int)Status.Cancelled;
-                        entry.Entity.LastUpdated_Timestamp = now;
-                        entry.Entity.LastUpdated_EmpId = _currentUserService.UserId ?? 0;
-                        break;
+                            entry.Property(x => x.Creation_Timestamp).IsModified = false;
+                            entry.Property(x => x.Creation_EmpId).IsModified = false;
+                            break;
+                        case EntityState.Deleted:
+                            entry.State = EntityState.Modified;
+                            entry.Entity.Status = (int)Status.Cancelled;
+                            entry.Entity.LastUpdated_Timestamp = now;
+                            entry.Entity.LastUpdated_EmpId = _currentUserService.UserId ?? 0;
+                            break;
+                    }
                 }
             }
         }
     }
+
 }
+

@@ -7,6 +7,7 @@ using ComputerSessionService.Infrastructure.Repositories;
 using ComputerSessionService.Infrastructure.Services;
 using InternetCafe.Common.Interfaces;
 using InternetCafe.Common.Repositories.IRepositories;
+using InternetCafe.Common.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,6 +45,7 @@ namespace ComputerSessionService.Infrastructure.Extensions
             services.AddScoped<IComputerService, ComputerService>();
             services.AddScoped<ISessionService, SessionService>();
 
+            services.AddSingleton<ITimeZoneService, TimeZoneService>();
             return services;
         }
     }

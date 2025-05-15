@@ -24,14 +24,15 @@ namespace ComputerSessionService.Application.Services
         private readonly ICurrentUserService _currentUserService;
         private readonly IAuditLogger _auditLogger;
         private readonly ILogger<SessionService> _logger;
-
+        private readonly ITimeZoneService _timeZoneService;  
         public SessionService(
             IUnitOfWork unitOfWork,
             IMapper mapper,
             IAccountServiceClient accountServiceClient,
             ICurrentUserService currentUserService,
             IAuditLogger auditLogger,
-            ILogger<SessionService> logger)
+            ILogger<SessionService> logger,
+            ITimeZoneService timeZoneService)
         {
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -39,12 +40,14 @@ namespace ComputerSessionService.Application.Services
             _currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
             _auditLogger = auditLogger ?? throw new ArgumentNullException(nameof(auditLogger));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _timeZoneService = timeZoneService;
         }
 
         public async Task<SessionDTO> StartSessionAsync(StartSessionDTO startSessionDTO)
         {
             try
             {
+                var now = _timeZoneService.GetVietnamTime();
                 await _unitOfWork.BeginTransactionAsync();
 
                 var existingUserSession = await HasActiveSessionAsync(startSessionDTO.UserId);
@@ -76,7 +79,7 @@ namespace ComputerSessionService.Application.Services
                 {
                     UserId = startSessionDTO.UserId,
                     ComputerId = startSessionDTO.ComputerId,
-                    StartTime = DateTime.UtcNow,
+                    StartTime = now,
                     Duration = TimeSpan.Zero,
                     TotalCost = 0,
                     Status = (int)SessionStatus.Active
@@ -94,7 +97,7 @@ namespace ComputerSessionService.Application.Services
                     "Session",
                     session.Id,
                     _currentUserService.UserId ?? startSessionDTO.UserId,
-                    DateTime.UtcNow,
+                    now,
                     $"Session started for user {startSessionDTO.UserId} on computer {startSessionDTO.ComputerId}");
 
                 var sessionDto = _mapper.Map<SessionDTO>(session);
@@ -115,6 +118,7 @@ namespace ComputerSessionService.Application.Services
         {
             try
             {
+                var now = _timeZoneService.GetVietnamTime();
                 await _unitOfWork.BeginTransactionAsync();
 
                 var session = await _unitOfWork.Sessions.GetByIdAsync(endSessionDTO.SessionId);
@@ -134,9 +138,9 @@ namespace ComputerSessionService.Application.Services
                     throw new Exception($"Computer with ID {session.ComputerId} not found.");
                 }
 
-                var endTime = DateTime.UtcNow;
+                var endTime = now;
                 var duration = endTime - session.StartTime;
-                var cost = CalculateSessionCost(duration, computer.HourlyRate);
+                var cost = CalculateSessionCost(duration, 1);
 
                 session.EndTime = endTime;
                 session.Duration = duration;
@@ -159,7 +163,7 @@ namespace ComputerSessionService.Application.Services
                     "Session",
                     session.Id,
                     _currentUserService.UserId ?? session.UserId,
-                    DateTime.UtcNow,
+                    now,
                     $"Session ended for user {session.UserId}. Duration: {duration}, Cost: {cost}");
 
                 var sessionDto = _mapper.Map<SessionDTO>(session);
@@ -242,6 +246,7 @@ namespace ComputerSessionService.Application.Services
 
         public async Task<decimal> CalculateSessionCostAsync(int sessionId)
         {
+            var now = _timeZoneService.GetVietnamTime();
             var session = await _unitOfWork.Sessions.GetByIdAsync(sessionId);
             if (session == null)
             {
@@ -257,7 +262,7 @@ namespace ComputerSessionService.Application.Services
                     throw new Exception($"Computer with ID {session.ComputerId} not found.");
                 }
 
-                var currentDuration = DateTime.UtcNow - session.StartTime;
+                var currentDuration = now - session.StartTime;
                 return CalculateSessionCost(currentDuration, computer.HourlyRate);
             }
 
@@ -273,6 +278,7 @@ namespace ComputerSessionService.Application.Services
 
         public async Task<TimeSpan> GetRemainingTimeAsync(int userId, int computerId)
         {
+            var now = _timeZoneService.GetVietnamTime();
             var session = await _unitOfWork.Sessions.GetCurrentSessionByComputerIdAsync(computerId);
             if (session == null || session.UserId != userId)
             {
@@ -286,7 +292,7 @@ namespace ComputerSessionService.Application.Services
             {
                 throw new Exception($"Computer with ID {computerId} not found.");
             }
-            var currentDuration = DateTime.UtcNow - session.StartTime;
+            var currentDuration = now - session.StartTime;
             var currentCost = CalculateSessionCost(currentDuration, computer.HourlyRate);
             var hourlyRate = computer.HourlyRate;
 
@@ -311,6 +317,7 @@ namespace ComputerSessionService.Application.Services
         {
             try
             {
+                var now = _timeZoneService.GetVietnamTime();
                 await _unitOfWork.BeginTransactionAsync();
 
                 var session = await _unitOfWork.Sessions.GetByIdAsync(sessionId);
@@ -330,7 +337,7 @@ namespace ComputerSessionService.Application.Services
                     throw new Exception($"Computer with ID {session.ComputerId} not found.");
                 }
 
-                var endTime = DateTime.UtcNow;
+                var endTime = now;
                 var duration = endTime - session.StartTime;
                 var cost = CalculateSessionCost(duration, computer.HourlyRate);
 
@@ -354,7 +361,7 @@ namespace ComputerSessionService.Application.Services
                     "Session",
                     session.Id,
                     _currentUserService.UserId ?? session.UserId,
-                    DateTime.UtcNow,
+                    now,
                     $"Session terminated. Reason: {reason}. Duration: {duration}, Cost: {cost}");
 
                 var sessionDto = _mapper.Map<SessionDTO>(session);
@@ -402,8 +409,8 @@ namespace ComputerSessionService.Application.Services
                     Name = computer.Name,
                     IpAddress = computer.IPAddress,
                     Location = computer.Location,
-                    Status = (int)computer.Status,
-                    StatusText = GetStatusText(computer.Status),
+                    Status = (int)computer.ComputerStatus,
+                    StatusText = GetStatusText(computer.ComputerStatus),
                     HourlyRate = computer.HourlyRate
                 };
 
@@ -414,8 +421,6 @@ namespace ComputerSessionService.Application.Services
                     detail.SessionStartTime = activeSession.StartTime;
                     detail.SessionDuration = CalculateDuration(activeSession.StartTime);
                     detail.CurrentSessionCost = await CalculateSessionCostAsync(activeSession.Id);
-                    detail.Status = (int)ComputerStatus.InUse;
-                    detail.StatusText = "Đang sử dụng";
                 }
 
                 computerDetails.Add(detail);
@@ -452,7 +457,8 @@ namespace ComputerSessionService.Application.Services
 
         private string CalculateDuration(DateTime startTime)
         {
-            var duration = DateTime.UtcNow - startTime;
+            var now = _timeZoneService.GetVietnamTime();
+            var duration = now - startTime;
             return $"{(int)duration.TotalHours:00}:{duration.Minutes:00}:{duration.Seconds:00}";
         }
     }
