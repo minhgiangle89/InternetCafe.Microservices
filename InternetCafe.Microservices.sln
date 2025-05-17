@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{954DE19B-E80D-44C1-80C2-CDDD7D445302}"
-	ProjectSection(SolutionItems) = preProject
-		Gateway\Dockerfile = Gateway\Dockerfile
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InternetCafe.Gateway", "Gateway\InternetCafe.Gateway\InternetCafe.Gateway.csproj", "{59C9F2A0-0DCC-4287-9594-37486F9E6543}"
 EndProject
@@ -49,9 +46,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StatisticsService.Infrastructure", "Services\StatisticsService\StatisticsService.Infrastructure\StatisticsService.Infrastructure.csproj", "{D58E26A0-BD16-4DD6-AF1C-4C41D66E5919}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AccountService", "AccountService", "{00817290-8755-43EC-ACAD-6D15089D4330}"
-	ProjectSection(SolutionItems) = preProject
-		Services\AccountService\Dockerfile = Services\AccountService\Dockerfile
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountService.API", "Services\AccountService\AccountService.API\AccountService.API.csproj", "{1CE49D9B-82B9-4EAB-A47D-AD15BEC4DF12}"
 EndProject

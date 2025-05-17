@@ -571,3 +571,74 @@ jobs:
         context: ./Gateway/InternetCafe.Gateway
         push: true
         tags: yourcompany/internetcafe-gateway:latest		
+		
+----------------------------------------Script---------------------------------------
+1/Docker
+
+
+Mở Command Prompt hoặc PowerShell:
+
+Trên Windows, bạn có thể bấm phím Windows + R, gõ "cmd" hoặc "powershell" và nhấn Enter
+Hoặc tìm "Command Prompt" hoặc "PowerShell" trong menu Start
+
+
+Di chuyển đến thư mục gốc của dự án (thư mục chứa file docker-compose.yml):
+cd đường_dẫn_đến_thư_mục_dự_án
+Ví dụ:
+cd D:\Project\InternetCafeMicroservice
+
+Chạy lệnh docker-compose down:
+
+docker-compose down --rmi all --volumes
+
+Lệnh này sẽ dừng và xóa tất cả container, image và volume liên quan đến docker-compose.yml
+Khởi động lại Docker Desktop:
+Vào System Tray (góc dưới bên phải màn hình)
+Chuột phải vào biểu tượng Docker
+Chọn "Restart Docker Desktop"
+
+Đợi Docker khởi động lại xong, sau đó trở lại Command Prompt/PowerShell và chạy lệnh build:
+
+docker-compose build --no-cache
+
+có thể build từng project
+docker-compose build --no-cache gateway
+docker-compose build --no-cache auth-user-service
+docker-compose build --no-cache computer-session-service
+docker-compose build --no-cache account-service
+docker-compose build --no-cache statistics-service
+
+
+
+Lệnh này sẽ xây dựng lại tất cả image mà không sử dụng cache
+Chạy dịch vụ:
+
+docker-compose up
+
+Hoặc nếu bạn muốn chạy ngầm (detached mode):
+docker-compose up -d
+
+
+Một lưu ý quan trọng: Đảm bảo rằng bạn đã tạo file docker-compose.yml trong thư mục gốc của dự án với nội dung như tôi đã cung cấp ở tin nhắn trước.
+Nếu bạn sử dụng Visual Studio, bạn cũng có thể:
+
+Mở Terminal tích hợp trong Visual Studio (View > Terminal)
+Đảm bảo đường dẫn đang ở thư mục gốc của dự án
+Chạy các lệnh docker-compose ở đó
+
+
+----------------------------------------------------------------------------------------
+1/AuthUserService
+Remove-Migration -Project AuthUserService.Infrastructure
+Add-Migration InitialCreate -Project AuthUserService.Infrastructure -StartupProject AuthUserService.API
+Update-Database -Project AuthUserService.Infrastructure -StartupProject AuthUserService.API
+
+2/ComputerSessionService
+Remove-Migration -Project ComputerSessionService.Infrastructure
+Add-Migration InitialCreate -Project ComputerSessionService.Infrastructure -StartupProject ComputerSessionService.API
+Update-Database -Project ComputerSessionService.Infrastructure -StartupProject ComputerSessionService.API
+
+3/AccountService
+Remove-Migration -Project AccountService.Infrastructure
+Add-Migration InitialCreate -Project AccountService.Infrastructure -StartupProject AccountService.API
+Update-Database -Project AccountService.Infrastructure -StartupProject AccountService.API

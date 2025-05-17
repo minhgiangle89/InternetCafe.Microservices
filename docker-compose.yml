@@ -1,46 +1,76 @@
+version: '3.8'
+
 services:
   # API Gateway
   gateway:
     build:
-      context: ./Gateway/InternetCafe.Gateway
+      context: .
+      dockerfile: Gateway/InternetCafe.Gateway/Dockerfile
+    container_name: internetcafe-gateway
     ports:
-      - "5000:80"
+      - "5278:80"
     depends_on:
       - auth-user-service
       - computer-session-service
       - account-service
       - statistics-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
     networks:
       - internetcafe-network
+    volumes:
+      - ./Gateway:/app/Gateway
+
   # Auth & User Service  
   auth-user-service:
     build:
-      context: ./Services/AuthUserService
+      context: .
+      dockerfile: Services/AuthUserService/AuthUserService.API/Dockerfile
+    container_name: internetcafe-auth-service
+    ports:
+      - "5050:80"  
     environment:
-      - ConnectionStrings__DefaultConnection=Server=DESKTOP-12BABDK;Database=InternetCafe_User;User Id=sa;Password=1;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_User;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
     depends_on:
       - sql-server
     networks:
       - internetcafe-network
+    volumes:
+      - ./Services/AuthUserService:/app/Services/AuthUserService
+
   # Computer & Session Service
   computer-session-service:
     build:
-      context: ./Services/ComputerSessionService
+      context: .
+      dockerfile: Services/ComputerSessionService/ComputerSessionService.API/Dockerfile
+    container_name: internetcafe-computer-service
+    ports:
+      - "5193:80"
     environment:
-      - ConnectionStrings__DefaultConnection=Server=DESKTOP-12BABDK;Database=InternetCafe_ComputerSession;User Id=sa;Password=1;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_ComputerSession;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
       - ServiceUrls__AuthUserService=http://auth-user-service
-      - ServiceUrls__AccountService=http://account-service    # Sửa tên service ở đây
+      - ServiceUrls__AccountService=http://account-service
     depends_on:
       - sql-server
       - auth-user-service
     networks:
       - internetcafe-network
-  # Account Service 
-  account-service:    # Đổi tên service ở đây
+    volumes:
+      - ./Services/ComputerSessionService:/app/Services/ComputerSessionService
+
+  # Account Service
+  account-service:
     build:
-      context: ./Services/AccountService
+      context: .
+      dockerfile: Services/AccountService/AccountService.API/Dockerfile
+    container_name: internetcafe-account-service
+    ports:
+      - "5190:80"
     environment:
-      - ConnectionStrings__DefaultConnection=Server=DESKTOP-12BABDK;Database=InternetCafe_Account;User Id=sa;Password=1!;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_Account;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
       - ServiceUrls__AuthUserService=http://auth-user-service
       - ServiceUrls__ComputerSessionService=http://computer-session-service
     depends_on:
@@ -48,19 +78,57 @@ services:
       - auth-user-service
     networks:
       - internetcafe-network
+    volumes:
+      - ./Services/AccountService:/app/Services/AccountService
+
+  # Statistics Service
+  statistics-service:
+    build:
+      context: .
+      dockerfile: Services/StatisticsService/StatisticsService.API/Dockerfile
+    container_name: internetcafe-statistics-service
+    ports:
+      - "5026:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_Statistics;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
+      - ServiceUrls__AuthUserService=http://auth-user-service
+      - ServiceUrls__ComputerSessionService=http://computer-session-service
+      - ServiceUrls__AccountService=http://account-service
+    depends_on:
+      - sql-server
+      - auth-user-service
+      - computer-session-service
+      - account-service
+    networks:
+      - internetcafe-network
+    volumes:
+      - ./Services/StatisticsService:/app/Services/StatisticsService
+
   # SQL Server
   sql-server:
     image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: internetcafe-sqlserver
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=1
+      - SA_PASSWORD=YourStrongPassword!
+      - MSSQL_PID=Express
     ports:
       - "1433:1433"
     volumes:
       - sqlserver-data:/var/opt/mssql
     networks:
       - internetcafe-network
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrongPassword!" -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
 networks:
   internetcafe-network:
+    driver: bridge
+
 volumes:
   sqlserver-data:
