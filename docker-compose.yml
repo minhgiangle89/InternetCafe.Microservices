@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # API Gateway
   gateway:
@@ -14,72 +12,55 @@ services:
       - statistics-service
     networks:
       - internetcafe-network
-
   # Auth & User Service  
   auth-user-service:
     build:
       context: ./Services/AuthUserService
     environment:
-      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_UserDb;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=DESKTOP-12BABDK;Database=InternetCafe_User;User Id=sa;Password=1;TrustServerCertificate=True
     depends_on:
       - sql-server
     networks:
       - internetcafe-network
-
   # Computer & Session Service
   computer-session-service:
     build:
       context: ./Services/ComputerSessionService
     environment:
-      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_ComputerSessionDb;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=DESKTOP-12BABDK;Database=InternetCafe_ComputerSession;User Id=sa;Password=1;TrustServerCertificate=True
       - ServiceUrls__AuthUserService=http://auth-user-service
-      - ServiceUrls__AccountStatisticsService=http://account-statistics-service
+      - ServiceUrls__AccountService=http://account-service    # Sửa tên service ở đây
     depends_on:
       - sql-server
       - auth-user-service
-      - rabbitmq
     networks:
       - internetcafe-network
-
-  # Account & Statistics Service
-  account-statistics-service:
+  # Account Service 
+  account-service:    # Đổi tên service ở đây
     build:
-      context: ./Services/AccountStatisticsService
+      context: ./Services/AccountService
     environment:
-      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_AccountStatsDb;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=DESKTOP-12BABDK;Database=InternetCafe_Account;User Id=sa;Password=1!;TrustServerCertificate=True
       - ServiceUrls__AuthUserService=http://auth-user-service
       - ServiceUrls__ComputerSessionService=http://computer-session-service
     depends_on:
       - sql-server
       - auth-user-service
-      - rabbitmq
     networks:
       - internetcafe-network
-
   # SQL Server
   sql-server:
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=YourStrongPassword!
+      - SA_PASSWORD=1
     ports:
       - "1433:1433"
     volumes:
       - sqlserver-data:/var/opt/mssql
     networks:
       - internetcafe-network
-
-  # RabbitMQ
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    networks:
-      - internetcafe-network
-
 networks:
   internetcafe-network:
-
 volumes:
   sqlserver-data:

@@ -5,6 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>false</InvariantGlobalization>
+    <UserSecretsId>95a4d4d3-11ed-47be-b9d4-4106a02a6aab</UserSecretsId>
+    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+    <DockerfileContext>..\..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +16,7 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
+	  <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
 	  <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="8.1.1" />
   </ItemGroup>
@@ -21,5 +25,11 @@
     <ProjectReference Include="..\AccountService.Infrastructure\AccountService.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\Common\InternetCafe.Common.Api\InternetCafe.Common.Api.csproj" />
   </ItemGroup>
-
+	<ItemGroup>
+		<None Include="Dockerfile" />
+	</ItemGroup>
+	<PropertyGroup>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileFile>Dockerfile</DockerfileFile>
+	</PropertyGroup>
 </Project>

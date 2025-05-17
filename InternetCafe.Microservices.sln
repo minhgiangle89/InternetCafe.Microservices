@@ -4,64 +4,67 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{954DE19B-E80D-44C1-80C2-CDDD7D445302}"
+	ProjectSection(SolutionItems) = preProject
+		Gateway\Dockerfile = Gateway\Dockerfile
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetCafe.Gateway", "Gateway\InternetCafe.Gateway\InternetCafe.Gateway.csproj", "{59C9F2A0-0DCC-4287-9594-37486F9E6543}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InternetCafe.Gateway", "Gateway\InternetCafe.Gateway\InternetCafe.Gateway.csproj", "{59C9F2A0-0DCC-4287-9594-37486F9E6543}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{C72B49B3-BA85-455A-A778-4467BE1BBA6C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetCafe.Common", "Common\InternetCafe.Common\InternetCafe.Common.csproj", "{883F304C-88B1-4BBC-AAE4-C1E430C29B65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InternetCafe.Common", "Common\InternetCafe.Common\InternetCafe.Common.csproj", "{883F304C-88B1-4BBC-AAE4-C1E430C29B65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetCafe.Common.Api", "Common\InternetCafe.Common.Api\InternetCafe.Common.Api.csproj", "{52E93BE0-F8B7-4E25-9B27-61FBF56E735D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InternetCafe.Common.Api", "Common\InternetCafe.Common.Api\InternetCafe.Common.Api.csproj", "{52E93BE0-F8B7-4E25-9B27-61FBF56E735D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{CD1341EC-CA42-4266-87A5-673CB2BBBEEA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuthUserService", "AuthUserService", "{71A095EA-1DFE-4D19-8CE9-8ED3B2525037}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthUserService.API", "Services\AuthUserService\AuthUserService.API\AuthUserService.API.csproj", "{86418FC2-2A73-4D3B-851A-0A03AD745F06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthUserService.API", "Services\AuthUserService\AuthUserService.API\AuthUserService.API.csproj", "{86418FC2-2A73-4D3B-851A-0A03AD745F06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthUserService.Domain", "Services\AuthUserService\AuthUserService.Domain\AuthUserService.Domain.csproj", "{8399C4FC-CAF6-4853-BD4F-29F47C3B1C9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthUserService.Domain", "Services\AuthUserService\AuthUserService.Domain\AuthUserService.Domain.csproj", "{8399C4FC-CAF6-4853-BD4F-29F47C3B1C9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthUserService.Application", "Services\AuthUserService\AuthUserService.Application\AuthUserService.Application.csproj", "{93E764F8-4448-46EA-A50B-D88E566686EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthUserService.Application", "Services\AuthUserService\AuthUserService.Application\AuthUserService.Application.csproj", "{93E764F8-4448-46EA-A50B-D88E566686EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthUserService.Infrastructure", "Services\AuthUserService\AuthUserService.Infrastructure\AuthUserService.Infrastructure.csproj", "{11A80358-E1D8-4AD7-8A72-C7DAB73B2FBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthUserService.Infrastructure", "Services\AuthUserService\AuthUserService.Infrastructure\AuthUserService.Infrastructure.csproj", "{11A80358-E1D8-4AD7-8A72-C7DAB73B2FBB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ComputerSessionService", "ComputerSessionService", "{D247D75F-548D-40C2-9198-B4783030C9E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerSessionService.API", "Services\ComputerSessionService\ComputerSessionService.API\ComputerSessionService.API.csproj", "{FC9C4DBD-7EDE-43D7-BA1E-1BC34C70DEF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerSessionService.API", "Services\ComputerSessionService\ComputerSessionService.API\ComputerSessionService.API.csproj", "{FC9C4DBD-7EDE-43D7-BA1E-1BC34C70DEF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerSessionService.Domain", "Services\ComputerSessionService\ComputerSessionService.Domain\ComputerSessionService.Domain.csproj", "{8563C5DD-E469-4CF9-B307-54D9AFBF87CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerSessionService.Domain", "Services\ComputerSessionService\ComputerSessionService.Domain\ComputerSessionService.Domain.csproj", "{8563C5DD-E469-4CF9-B307-54D9AFBF87CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerSessionService.Application", "Services\ComputerSessionService\ComputerSessionService.Application\ComputerSessionService.Application.csproj", "{851A701F-7BF8-402D-B2F2-09C6569453DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerSessionService.Application", "Services\ComputerSessionService\ComputerSessionService.Application\ComputerSessionService.Application.csproj", "{851A701F-7BF8-402D-B2F2-09C6569453DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerSessionService.Infrastructure", "Services\ComputerSessionService\ComputerSessionService.Infrastructure\ComputerSessionService.Infrastructure.csproj", "{3714638E-B1B1-4FF5-AADA-C659746AA93B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputerSessionService.Infrastructure", "Services\ComputerSessionService\ComputerSessionService.Infrastructure\ComputerSessionService.Infrastructure.csproj", "{3714638E-B1B1-4FF5-AADA-C659746AA93B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StatisticsService", "StatisticsService", "{ED56EC92-716C-4E63-B095-31A197AF2614}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatisticsService.API", "Services\StatisticsService\StatisticsService.API\StatisticsService.API.csproj", "{30F5D852-935B-4EBD-9F2A-E175EAB8C63E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StatisticsService.API", "Services\StatisticsService\StatisticsService.API\StatisticsService.API.csproj", "{30F5D852-935B-4EBD-9F2A-E175EAB8C63E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatisticsService.Domain", "Services\StatisticsService\StatisticsService.Domain\StatisticsService.Domain.csproj", "{63BB45BC-DBE1-47D0-8097-EDF81E5A5E70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StatisticsService.Domain", "Services\StatisticsService\StatisticsService.Domain\StatisticsService.Domain.csproj", "{63BB45BC-DBE1-47D0-8097-EDF81E5A5E70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatisticsService.Application", "Services\StatisticsService\StatisticsService.Application\StatisticsService.Application.csproj", "{57951330-180E-4BA4-BF63-F6AA0595DC57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StatisticsService.Application", "Services\StatisticsService\StatisticsService.Application\StatisticsService.Application.csproj", "{57951330-180E-4BA4-BF63-F6AA0595DC57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatisticsService.Infrastructure", "Services\StatisticsService\StatisticsService.Infrastructure\StatisticsService.Infrastructure.csproj", "{D58E26A0-BD16-4DD6-AF1C-4C41D66E5919}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StatisticsService.Infrastructure", "Services\StatisticsService\StatisticsService.Infrastructure\StatisticsService.Infrastructure.csproj", "{D58E26A0-BD16-4DD6-AF1C-4C41D66E5919}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AccountService", "AccountService", "{00817290-8755-43EC-ACAD-6D15089D4330}"
+	ProjectSection(SolutionItems) = preProject
+		Services\AccountService\Dockerfile = Services\AccountService\Dockerfile
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountService.API", "Services\AccountService\AccountService.API\AccountService.API.csproj", "{1CE49D9B-82B9-4EAB-A47D-AD15BEC4DF12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountService.API", "Services\AccountService\AccountService.API\AccountService.API.csproj", "{1CE49D9B-82B9-4EAB-A47D-AD15BEC4DF12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountService.Domain", "Services\AccountService\AccountService.Domain\AccountService.Domain.csproj", "{A18C4080-E5B1-4521-B5F3-AC57A1008837}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountService.Domain", "Services\AccountService\AccountService.Domain\AccountService.Domain.csproj", "{A18C4080-E5B1-4521-B5F3-AC57A1008837}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountService.Application", "Services\AccountService\AccountService.Application\AccountService.Application.csproj", "{937465E7-37F6-4CB6-9DDF-737A0D3FAA87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountService.Application", "Services\AccountService\AccountService.Application\AccountService.Application.csproj", "{937465E7-37F6-4CB6-9DDF-737A0D3FAA87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountService.Infrastructure", "Services\AccountService\AccountService.Infrastructure\AccountService.Infrastructure.csproj", "{B2172F3A-AA6F-4515-AF28-B779D4FB7C49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountService.Infrastructure", "Services\AccountService\AccountService.Infrastructure\AccountService.Infrastructure.csproj", "{B2172F3A-AA6F-4515-AF28-B779D4FB7C49}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{59C9F2A0-0DCC-4287-9594-37486F9E6543}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -141,6 +144,9 @@ Global
 		{B2172F3A-AA6F-4515-AF28-B779D4FB7C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2172F3A-AA6F-4515-AF28-B779D4FB7C49}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{59C9F2A0-0DCC-4287-9594-37486F9E6543} = {954DE19B-E80D-44C1-80C2-CDDD7D445302}
 		{883F304C-88B1-4BBC-AAE4-C1E430C29B65} = {C72B49B3-BA85-455A-A778-4467BE1BBA6C}
@@ -165,5 +171,8 @@ Global
 		{A18C4080-E5B1-4521-B5F3-AC57A1008837} = {00817290-8755-43EC-ACAD-6D15089D4330}
 		{937465E7-37F6-4CB6-9DDF-737A0D3FAA87} = {00817290-8755-43EC-ACAD-6D15089D4330}
 		{B2172F3A-AA6F-4515-AF28-B779D4FB7C49} = {00817290-8755-43EC-ACAD-6D15089D4330}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E2BACCA3-7571-4211-B06B-E45196F909A0}
 	EndGlobalSection
 EndGlobal
