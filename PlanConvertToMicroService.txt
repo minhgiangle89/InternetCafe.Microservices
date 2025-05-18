@@ -626,8 +626,71 @@ Mở Terminal tích hợp trong Visual Studio (View > Terminal)
 Đảm bảo đường dẫn đang ở thư mục gốc của dự án
 Chạy các lệnh docker-compose ở đó
 
+-----------------------------------Note Docker-----------------------------------
+1- Khi chỉ thay đổi docker-compose.yml
+docker-compose down
+docker-compose up -d
 
-----------------------------------------------------------------------------------------
+
+2 - Khi thay đổi mã nguồn (code):
+Nếu sử dụng volume mount trong development mode:
+Nếu bạn đang sử dụng volume để mount code từ máy host vào container (phổ biến trong development)
+Chỉ cần khởi động lại container là đủ, không cần rebuild
+
+docker-compose restart service-name
+
+Nếu không sử dụng volume mount (code được copy vào image):
+Bạn cần rebuild image chứa code đã thay đổi
+
+docker-compose build service-name
+docker-compose up -d service-name
+
+Hoặc để rebuild và khởi động lại cùng lúc:
+
+docker-compose up -d --build service-name
+
+
+
+3 - Khi thay đổi Dockerfile:
+docker-compose build service-name
+docker-compose up -d service-name
+
+
+4 - Các trường hợp khác:
+Thay đổi dependencies (packages, libraries):
+
+Rebuild image cho service bị ảnh hưởng
+
+docker-compose build service-name
+
+Thay đổi cấu trúc project:
+Có thể cần rebuild toàn bộ dự án nếu có sự phụ thuộc giữa các services
+
+docker-compose build
+
+Thay đổi database schema:
+Tùy thuộc vào cách bạn quản lý migrations, có thể cần restart service liên quan đến DB
+
+Bước 1: Build lại Docker images
+Nếu bạn đã thay đổi source code trong các project, bạn cần build lại các Docker images tương ứng. Sử dụng lệnh sau để chỉ build các services đã thay đổi:
+bash# Ví dụ, nếu bạn sửa mã nguồn của AccountService
+docker-compose build account-service
+
+# Hoặc build tất cả các services
+docker-compose build
+Bước 2: Khởi động lại containers
+Sau khi build xong, khởi động lại các containers với các images mới:
+bash# Dừng các containers hiện tại
+docker-compose down
+
+# Khởi động lại với các images mới
+docker-compose up -d
+
+/opt/mssql-tools18/bin/sqlcmd
+docker exec -it internetcafe-sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "1"
+
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "1"
+-----------------------------------EF Migration-----------------------------------------------------
 1/AuthUserService
 Remove-Migration -Project AuthUserService.Infrastructure
 Add-Migration InitialCreate -Project AuthUserService.Infrastructure -StartupProject AuthUserService.API
@@ -642,3 +705,20 @@ Update-Database -Project ComputerSessionService.Infrastructure -StartupProject C
 Remove-Migration -Project AccountService.Infrastructure
 Add-Migration InitialCreate -Project AccountService.Infrastructure -StartupProject AccountService.API
 Update-Database -Project AccountService.Infrastructure -StartupProject AccountService.API
+
+
+-----------------------------
+http://localhost:5278/swagger/index.html
+http://localhost:5193/swagger/index.html - ComputerSessionService.API
+http://localhost:5050/swagger/index.html - AuthUserService.API
+http://localhost:5190/swagger/index.html - AccountService.API
+
+
+
+
+----------------------------------------------------------------------------------
+
+Server : internetcafe-server
+DB : internetcafe-db
+server login : internetcafe-admin
+pass : Leminhgiang@89

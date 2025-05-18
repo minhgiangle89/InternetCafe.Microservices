@@ -8,7 +8,7 @@ services:
       dockerfile: Gateway/InternetCafe.Gateway/Dockerfile
     container_name: internetcafe-gateway
     ports:
-      - "5278:80"
+      - "5278:8080"
     depends_on:
       - auth-user-service
       - computer-session-service
@@ -28,7 +28,7 @@ services:
       dockerfile: Services/AuthUserService/AuthUserService.API/Dockerfile
     container_name: internetcafe-auth-service
     ports:
-      - "5050:80"  
+      - "5050:8080"  
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_User;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
@@ -46,7 +46,7 @@ services:
       dockerfile: Services/ComputerSessionService/ComputerSessionService.API/Dockerfile
     container_name: internetcafe-computer-service
     ports:
-      - "5193:80"
+      - "5193:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_ComputerSession;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
@@ -67,7 +67,7 @@ services:
       dockerfile: Services/AccountService/AccountService.API/Dockerfile
     container_name: internetcafe-account-service
     ports:
-      - "5190:80"
+      - "5190:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_Account;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
@@ -88,7 +88,7 @@ services:
       dockerfile: Services/StatisticsService/StatisticsService.API/Dockerfile
     container_name: internetcafe-statistics-service
     ports:
-      - "5026:80"
+      - "5026:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_Statistics;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
