@@ -116,7 +116,9 @@ services:
     ports:
       - "1433:1433"
     volumes:
-      - sqlserver-data:/var/opt/mssql
+    - sqlserver-data:/var/opt/mssql
+    - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    command: /bin/bash -c "/opt/mssql/bin/sqlservr & sleep 30s && /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrongPassword! -i /docker-entrypoint-initdb.d/init-db.sql && tail -f /dev/null"
     networks:
       - internetcafe-network
     healthcheck:
