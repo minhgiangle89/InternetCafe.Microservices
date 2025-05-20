@@ -31,7 +31,7 @@ services:
       - "5050:8080"  
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_User;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_User;User Id=sa;Password=1;TrustServerCertificate=True
     depends_on:
       - sql-server
     networks:
@@ -49,7 +49,7 @@ services:
       - "5193:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_ComputerSession;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_ComputerSession;User Id=sa;Password=1;TrustServerCertificate=True
       - ServiceUrls__AuthUserService=http://auth-user-service
       - ServiceUrls__AccountService=http://account-service
     depends_on:
@@ -70,7 +70,7 @@ services:
       - "5190:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_Account;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_Account;User Id=sa;Password=1;TrustServerCertificate=True
       - ServiceUrls__AuthUserService=http://auth-user-service
       - ServiceUrls__ComputerSessionService=http://computer-session-service
     depends_on:
@@ -91,7 +91,7 @@ services:
       - "5026:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_Statistics;User Id=sa;Password=YourStrongPassword!;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=InternetCafe_Statistics;User Id=sa;Password=1;TrustServerCertificate=True
       - ServiceUrls__AuthUserService=http://auth-user-service
       - ServiceUrls__ComputerSessionService=http://computer-session-service
       - ServiceUrls__AccountService=http://account-service
@@ -111,18 +111,18 @@ services:
     container_name: internetcafe-sqlserver
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=YourStrongPassword!
-      - MSSQL_PID=Express
+      - SA_PASSWORD=1
+      - MSSQL_PID=Developer
     ports:
       - "1433:1433"
     volumes:
     - sqlserver-data:/var/opt/mssql
     - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
-    command: /bin/bash -c "/opt/mssql/bin/sqlservr & sleep 30s && /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrongPassword! -i /docker-entrypoint-initdb.d/init-db.sql && tail -f /dev/null"
+    command: /bin/bash -c "/opt/mssql/bin/sqlservr & sleep 30s && /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 1 -i /docker-entrypoint-initdb.d/init-db.sql && tail -f /dev/null"
     networks:
       - internetcafe-network
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrongPassword!" -Q "SELECT 1" || exit 1
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "1" -Q "SELECT 1" || exit 1
       interval: 10s
       timeout: 3s
       retries: 10
